@@ -16,7 +16,7 @@ TAU = 1e-3              # for soft update of target parameters
 LR_ACTOR = 1e-3         # learning rate of the actor 
 LR_CRITIC = 1e-3        # learning rate of the critic
 WEIGHT_DECAY = 0.0001   # L2 weight decay
-NOISE_DECAY = 0.999
+NOISE_DECAY = 0.999     # noise decay
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class Agent():
@@ -42,23 +42,24 @@ class Agent():
               'actor learning rate: \t{:8.3f}\n\t' \
               'critic learning rate: \t{:8.3f}\n\t' \
               'soft update / tau: \t{:8.3f}\n\t' \
-              'noise decay rate: \t{:8.3f}\n\t' \
-              'Weight decay rate: \t{:8.3f}\n'
+              'noise decay rate: \t{:8.3f}\n\t' #\
+              #'Weight decay rate: \t{:8.3f}\n'
               .format(BUFFER_SIZE, BUFFER_SIZE, GAMMA,
-                      LR_ACTOR, LR_CRITIC, TAU, NOISE_DECAY, WEIGHT_DECAY))
+                      LR_ACTOR, LR_CRITIC, TAU, NOISE_DECAY))#, WEIGHT_DECAY))
             
         # Actor Network (w/ Target Network)
-        self.actor_local = Actor(state_size, action_size, random_seed).to(device)
-        self.actor_target = Actor(state_size, action_size, random_seed).to(device)
+        self.actor_local = Actor(state_size, action_size, random_seed, [400, 300]).to(device)
+        self.actor_target = Actor(state_size, action_size, random_seed, [400, 300]).to(device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=LR_ACTOR)
 
         # Critic Network (w/ Target Network)
-        self.critic_local = Critic(state_size, action_size, random_seed).to(device)
-        self.critic_target = Critic(state_size, action_size, random_seed).to(device)
-        self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY)
+        self.critic_local = Critic(state_size, action_size, random_seed, [400, 300]).to(device)
+        self.critic_target = Critic(state_size, action_size, random_seed, [400, 300]).to(device)
+        self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC)#, weight_decay=WEIGHT_DECAY)
 
         # Noise process
         self.noise = OUNoise(action_size, random_seed)
+        self.noise_decay = NOISE_DECAY
 
         # Replay memory
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
@@ -81,7 +82,8 @@ class Agent():
             action = self.actor_local(state).cpu().data.numpy()
         self.actor_local.train()
         if add_noise:
-            action += self.noise.sample()
+            action += self.noise.sample() * self.noise_decay
+            self.noise_decay *= self.noise_decay
         return np.clip(action, -1, 1)
 
     def reset(self):
@@ -122,6 +124,7 @@ class Agent():
         # Minimize the loss
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.critic_local.parameters(), 1)
         self.actor_optimizer.step()
 
         # ----------------------- update target networks ----------------------- #
