@@ -86,3 +86,24 @@ Then, place the file in the `p2_continuous-control/` folder in the DRLND GitHub 
 
 (_For AWS_) If you'd like to train the agent on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Crawler/Crawler_Linux_NoVis.zip) to obtain the "headless" version of the environment.  You will **not** be able to watch the agent without enabling a virtual screen, but you will be able to train the agent.  (_To watch the agent, you should follow the instructions to [enable a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md), and then download the environment for the **Linux** operating system above._)
 
+
+### B)Results and Proof Of Solving Enviroment 
+In order to Solve this environment, :
+
+* version 1: A single agent must be able to achieve an average reward (over 100 episodes) of at least 30.
+* version 2: The Avg Reward of the 20 agents per eposide is ( over 100 episodes) of at least 30.
+In order not to waste testing time, the below trainning function breaks upon achieving the solve criteria and prints out Enviroment Solved. However, it is possible that function might return without achieving the criteria.
+
+Below is graph Heighting: 
+
+1. Avg Scores achieved by for agent(s) for each Eposide
+
+2. The Min score required , orange line, at score 30 to show relatively the perfomance of the agent against the 1st success criteria, ie the minScore
+
+3. The Avg Achieved Score, green Line, on the last 100 Episodes which is the 2nd success criteria, ie the MinEposides
+
+4. The Avg Achieved Score for last 100 episodes, Red Line, which shows how the Agent's performance improves till it meets the Solve criteria and stop
+
+[image_ReportGraphs]: https://github.com/yehiahesham/Continuous_Control_RL_Agent/blob/main/Result.png "Trained Agent"
+
+![Report Graphs][image_ReportGraphs]
