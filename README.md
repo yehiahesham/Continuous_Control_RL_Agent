@@ -94,7 +94,7 @@ In order to Solve this environment, :
 * version 2: The Avg Reward of the 20 agents per eposide is ( over 100 episodes) of at least 30.
 In order not to waste testing time, the below trainning function breaks upon achieving the solve criteria and prints out Enviroment Solved. However, it is possible that function might return without achieving the criteria.
 
-Below is graph Heighting: 
+Below is graph Highlighting : 
 
 1. Avg Scores achieved by for agent(s) for each Eposide
 
